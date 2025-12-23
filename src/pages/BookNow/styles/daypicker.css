@@ -1,0 +1,157 @@
+@import "react-day-picker/style.css";
+
+.calendar-wrapper {
+  width: 100%;
+}
+
+.bookease-picker {
+  --rdp-accent-color: #2ec2b3;
+  --rdp-background-color: #2ec2b3;
+  width: 100%;
+}
+
+.bookease-picker .rdp {
+  width: 100%;
+}
+
+.bookease-picker .rdp-months {
+  width: 100%;
+  justify-content: center;
+}
+
+.bookease-picker .rdp-month {
+  width: 100%;
+  max-width: none;
+}
+
+.bookease-picker .rdp-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.bookease-picker .rdp-head_cell,
+.bookease-picker .rdp-cell {
+  width: calc(100% / 7);
+  text-align: center;
+}
+
+.bookease-picker .rdp-cell {
+  padding: 6px 0;
+}
+
+.bookease-picker .rdp-nav {
+  gap: 14px;
+}
+
+.bookease-picker .rdp-nav_button {
+  width: 44px;
+  height: 44px;
+  border-radius: 9999px;
+  background: #f8fafa;
+  border: 1px solid #e2e9e9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1d2930;
+}
+
+.bookease-picker .rdp-chevron {
+  width: 18px;
+  height: 18px;
+  stroke-width: 2.5;
+}
+
+.bookease-picker .rdp-button {
+  width: 100%;
+  height: 42px;
+  border-radius: 9999px;
+  font-weight: 500;
+  color: #1d2930;
+}
+
+.bookease-picker .rdp-button:hover:not([disabled]) {
+  background: #f8fafa;
+}
+
+.bookease-picker .rdp-today {
+  font-weight: 600;
+}
+
+.bookease-picker button[aria-selected="true"] {
+  background-color: #2ec2b3 !important;
+  color: #ffffff !important;
+  border-radius: 9999px !important;
+  font-weight: 600 !important;
+}
+
+.bookease-picker .rdp-day_outside button[aria-selected="true"] {
+  background-color: #2ec2b3 !important;
+  color: #ffffff !important;
+}
+
+.bookease-picker button[aria-selected="true"]:hover {
+  background-color: #2ec2b3 !important;
+  color: #ffffff !important;
+}
+
+.bookease-picker .rdp-day_outside button {
+  color: #b7c3c9;
+}
+
+.bookease-picker .rdp-caption_label {
+  font-size: 16px;
+  font-weight: 500;
+  color: #1d2930;
+}
+
+.bookease-picker .rdp-weekday {
+  font-size: 13px;
+  font-weight: 500;
+  color: #627884;
+}
+
+.bookease-picker *:focus,
+.bookease-picker *:focus-visible,
+.bookease-picker *:active {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.bookease-picker button {
+  -webkit-tap-highlight-color: transparent !important;
+}
+
+@media (max-width: 420px) {
+  .bookease-picker .rdp-nav_button {
+    width: 40px;
+    height: 40px;
+  }
+
+  .bookease-picker .rdp-button {
+    height: 38px;
+  }
+
+  .bookease-picker .rdp-caption_label {
+    font-size: 14px;
+  }
+
+  .bookease-picker .rdp-weekday {
+    font-size: 12px;
+  }
+
+  .bookease-picker .rdp-cell {
+    padding: 4px 0;
+  }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+  .bookease-picker .rdp-button {
+    height: 46px;
+  }
+
+  .bookease-picker .rdp-caption_label {
+    font-size: 17px;
+  }
+}
