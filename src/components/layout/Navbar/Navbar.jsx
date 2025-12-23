@@ -62,7 +62,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              to="/get-started"
+              to="/signup"
               className="bg-[#2ec2b3] text-white font-semibold px-3 lg:px-5 py-2.5 rounded-xl hover:opacity-90 transition text-sm lg:text-base whitespace-nowrap"
             >
               Get Started
@@ -114,7 +114,7 @@ export default function Navbar() {
             </Link>
 
             <Link
-              to="/get-started"
+              to="/signup"
               onClick={() => setOpen(false)}
               className="bg-[#2ec2b3] text-white font-semibold px-4 py-3 rounded-xl hover:opacity-90 transition text-center"
             >
