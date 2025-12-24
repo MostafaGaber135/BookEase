@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Link, NavLink, useNavigate } from "react-router-dom";
-import { getToken, getUser, clearToken, clearUser, notifyAuthChanged } from "../../../utils/authToken";
+import {
+  getToken,
+  getUser,
+  clearToken,
+  clearUser,
+  notifyAuthChanged,
+} from "../../../utils/authToken";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -32,7 +38,10 @@ export default function Navbar() {
 
   const navLinkClass = ({ isActive }) =>
     `px-3 lg:px-4 py-2 rounded-xl text-sm lg:text-base font-medium transition whitespace-nowrap
-     ${isActive ? "bg-gray-100 text-gray-900" : "text-gray-700 hover:bg-gray-100"}`;
+     ${isActive
+      ? "bg-gray-100 text-gray-900"
+      : "text-gray-700 hover:bg-gray-100"
+    }`;
 
   const displayName = user?.username || user?.name || "User";
 
@@ -61,7 +70,10 @@ export default function Navbar() {
               </svg>
             </div>
 
-            <Link to="/" className="font-bold text-lg sm:text-xl text-gray-900 truncate">
+            <Link
+              to="/"
+              className="font-bold text-lg sm:text-xl text-gray-900 truncate"
+            >
               BookEase
             </Link>
           </div>
@@ -84,17 +96,24 @@ export default function Navbar() {
             ) : null}
           </nav>
 
-          <div className="hidden md:flex items-center gap-2 lg:gap-4 shrink-0">
+          <div className="hidden md:flex items-center gap-3 lg:gap-4 shrink-0">
             {!isAuthed ? (
-              <Link
-                to="/signup"
-                className="bg-[#2ec2b3] text-white font-semibold px-3 lg:px-5 py-2.5 rounded-xl hover:opacity-90 transition text-sm lg:text-base whitespace-nowrap"
-              >
-                Get Started
-              </Link>
-            ) : null}
+              <>
+                <Link
+                  to="/signin"
+                  className="text-gray-700 font-medium hover:text-gray-900 text-sm lg:text-base whitespace-nowrap"
+                >
+                  Sign In
+                </Link>
 
-            {isAuthed ? (
+                <Link
+                  to="/signup"
+                  className="bg-[#2ec2b3] text-white font-semibold px-3 lg:px-5 py-2.5 rounded-xl hover:opacity-90 transition text-sm lg:text-base whitespace-nowrap"
+                >
+                  Get Started
+                </Link>
+              </>
+            ) : (
               <div className="flex items-center gap-3">
                 <div className="inline-flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-2 text-gray-800">
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
@@ -137,7 +156,7 @@ export default function Navbar() {
                   </svg>
                 </button>
               </div>
-            ) : null}
+            )}
           </div>
 
           <button
@@ -148,12 +167,34 @@ export default function Navbar() {
             onClick={() => setOpen((v) => !v)}
           >
             {!open ? (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-gray-800">
-                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="text-gray-800"
+              >
+                <path
+                  d="M4 7h16M4 12h16M4 17h16"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
               </svg>
             ) : (
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-gray-800">
-                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+              <svg
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                className="text-gray-800"
+              >
+                <path
+                  d="M6 6l12 12M18 6L6 18"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                />
               </svg>
             )}
           </button>
@@ -161,18 +202,35 @@ export default function Navbar() {
 
         <div className={`${open ? "block" : "hidden"} md:hidden pb-4`}>
           <div className="mt-2 flex flex-col gap-2">
-            <NavLink onClick={() => setOpen(false)} to="/" className={navLinkClass} end>
+            <NavLink
+              onClick={() => setOpen(false)}
+              to="/"
+              className={navLinkClass}
+              end
+            >
               Home
             </NavLink>
-            <NavLink onClick={() => setOpen(false)} to="/services" className={navLinkClass}>
+            <NavLink
+              onClick={() => setOpen(false)}
+              to="/services"
+              className={navLinkClass}
+            >
               Services
             </NavLink>
-            <NavLink onClick={() => setOpen(false)} to="/book" className={navLinkClass}>
+            <NavLink
+              onClick={() => setOpen(false)}
+              to="/book"
+              className={navLinkClass}
+            >
               Book Now
             </NavLink>
 
             {isAuthed ? (
-              <NavLink onClick={() => setOpen(false)} to="/mybooking" className={navLinkClass}>
+              <NavLink
+                onClick={() => setOpen(false)}
+                to="/mybooking"
+                className={navLinkClass}
+              >
                 My Booking
               </NavLink>
             ) : null}
@@ -180,13 +238,23 @@ export default function Navbar() {
             <div className="h-px bg-gray-100 my-2" />
 
             {!isAuthed ? (
-              <Link
-                to="/signup"
-                onClick={() => setOpen(false)}
-                className="bg-[#2ec2b3] text-white font-semibold px-4 py-3 rounded-xl hover:opacity-90 transition text-center"
-              >
-                Get Started
-              </Link>
+              <>
+                <Link
+                  to="/signin"
+                  onClick={() => setOpen(false)}
+                  className="px-4 py-2 rounded-xl font-medium text-gray-700 hover:bg-gray-100"
+                >
+                  Sign In
+                </Link>
+
+                <Link
+                  to="/signup"
+                  onClick={() => setOpen(false)}
+                  className="bg-[#2ec2b3] text-white font-semibold px-4 py-3 rounded-xl hover:opacity-90 transition text-center"
+                >
+                  Get Started
+                </Link>
+              </>
             ) : (
               <div className="flex items-center justify-between gap-3 px-2">
                 <div className="inline-flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-2 text-gray-800">
