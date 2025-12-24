@@ -93,23 +93,23 @@ export default function Services() {
         {!loading && !err && (
           <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
-              {viewServices.map((s) => {
-                const catKey = (s.category || "").toLowerCase();
+              {viewServices.map((services) => {
+                const catKey = (services.category || "").toLowerCase();
                 const meta = CATEGORY_META[catKey] || {
-                  label: s.category || "Service",
+                  label: services.category || "Service",
                   color: "#2ec2b3",
                 };
 
                 return (
                   <PopularServicesCard
-                    key={s._id || s.name}
+                    key={services._id || services.name}
                     badgeText={meta.label}
                     badgeColor={meta.color}
                     badgeTextColor={meta.textColor}
-                    price={s.price}
-                    title={s.name}
-                    description={s.description}
-                    duration={`${s.duration} minutes`}
+                    price={services.price}
+                    title={services.name}
+                    description={services.description}
+                    duration={`${services.durationMinutes} minutes`}
                   />
                 );
               })}

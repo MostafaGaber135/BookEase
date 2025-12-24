@@ -17,10 +17,10 @@ export default function ServiceRow({ item, selected, onSelect }) {
             <div className="flex items-start justify-between gap-3 sm:gap-4">
                 <div className="min-w-0 flex-1">
                     <h4 className="font-bold text-[#1d2930] text-sm sm:text-base truncate">
-                        {item.title}
+                        {item.name}
                     </h4>
                     <p className="text-xs sm:text-sm text-[#627884] mt-1 wrap-break-word">
-                        {item.duration} min • {item.category}
+                        {item.durationMinutes} min • {item.category}
                     </p>
                 </div>
 

@@ -8,31 +8,69 @@ import StepChooseDateTime from "./steps/StepChooseDateTime";
 import StepYourDetails from "./steps/StepYourDetails";
 import StepConfirmation from "./steps/StepConfirmation";
 
-const SERVICES = [
-  { title: "General Consultation", duration: 30, category: "Medical", price: 75 },
-  { title: "Dental Cleaning", duration: 45, category: "Dental", price: 120 },
-  { title: "Personal Training Session", duration: 60, category: "Fitness", price: 85 },
-  { title: "Swedish Massage", duration: 60, category: "Wellness", price: 95 },
-  { title: "Eye Examination", duration: 30, category: "Medical", price: 65 },
-  { title: "Yoga Class", duration: 75, category: "Fitness", price: 25 },
-];
+import api from "../../api/axios";
+import { format } from "date-fns";
 
 export default function BookNow() {
   const location = useLocation();
 
   const [step, setStep] = useState(1);
 
-  const [selectedService, setSelectedService] = useState(() => {
-    const preselected = location.state?.preselectedService;
-    if (!preselected) return null;
-    const matched = SERVICES.find((s) => s.title === preselected.title);
-    return matched ?? preselected;
-  });
+  const [services, setServices] = useState([]);
+  const [servicesLoading, setServicesLoading] = useState(true);
+  const [servicesErr, setServicesErr] = useState("");
+
+  const [bookingLoading, setBookingLoading] = useState(false);
+  const [bookingErr, setBookingErr] = useState("");
+
+  const [selectedService, setSelectedService] = useState(null);
 
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedTime, setSelectedTime] = useState("");
 
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
+
+  useEffect(() => {
+    let alive = true;
+
+    async function loadServices() {
+      try {
+        setServicesLoading(true);
+        setServicesErr("");
+
+        const res = await api.get("/api/services");
+
+        const list = Array.isArray(res.data) ? res.data : res.data?.services || [];
+        if (!alive) return;
+
+        setServices(list);
+
+        const preselected = location.state?.preselectedService;
+
+        if (preselected) {
+          const preId = preselected._id || preselected.id;
+          const preTitle = preselected.title || preselected.name;
+
+          const matched =
+            (preId && list.find((s) => s._id === preId)) ||
+            (preTitle && list.find((s) => s.name === preTitle));
+
+          setSelectedService(matched || null);
+        }
+      } catch (e) {
+        if (!alive) return;
+        setServicesErr(e?.response?.data?.message || e?.message || "Failed to load services");
+      } finally {
+        if (alive) setServicesLoading(false);
+      }
+    }
+
+    loadServices();
+
+    return () => {
+      alive = false;
+    };
+  }, [location.state]);
 
   useEffect(() => {
     if (location.state?.preselectedService) {
@@ -43,11 +81,41 @@ export default function BookNow() {
   const canNext = useMemo(() => {
     if (step === 1) return !!selectedService;
     if (step === 2) return !!selectedDate && !!selectedTime;
-    if (step === 3) return form.name && form.email && form.phone;
+    if (step === 3) return form.name && form.email && form.phone && !bookingLoading;
     return true;
-  }, [step, selectedService, selectedDate, selectedTime, form]);
+  }, [step, selectedService, selectedDate, selectedTime, form, bookingLoading]);
 
-  const next = () => setStep((s) => Math.min(4, s + 1));
+  const next = async () => {
+    if (step === 3) {
+      try {
+        setBookingLoading(true);
+        setBookingErr("");
+
+        const dateStr = selectedDate ? format(selectedDate, "yyyy-MM-dd") : "";
+
+        await api.post("/api/bookings", {
+          serviceId: selectedService?._id,
+          date: dateStr,
+          time: selectedTime,
+          customerName: form.name,
+          customerEmail: form.email,
+          customerPhone: form.phone,
+        });
+
+        setStep(4);
+      } catch (e) {
+        setBookingErr(
+          e?.response?.data?.message || e?.message || "Failed to confirm booking"
+        );
+      } finally {
+        setBookingLoading(false);
+      }
+      return;
+    }
+
+    setStep((s) => Math.min(4, s + 1));
+  };
+
   const back = () => setStep((s) => Math.max(1, s - 1));
 
   return (
@@ -59,7 +127,9 @@ export default function BookNow() {
           <div className="w-full max-w-4xl">
             {step === 1 && (
               <StepSelectService
-                services={SERVICES}
+                services={services}
+                loading={servicesLoading}
+                error={servicesErr}
                 selectedService={selectedService}
                 setSelectedService={setSelectedService}
               />
@@ -67,6 +137,7 @@ export default function BookNow() {
 
             {step === 2 && (
               <StepChooseDateTime
+                selectedService={selectedService}
                 selectedDate={selectedDate}
                 setSelectedDate={setSelectedDate}
                 selectedTime={selectedTime}
@@ -74,12 +145,24 @@ export default function BookNow() {
               />
             )}
 
-            {step === 3 && <StepYourDetails form={form} setForm={setForm} />}
+            {step === 3 && (
+              <>
+                <StepYourDetails form={form} setForm={setForm} />
+                {bookingErr && (
+                  <p className="mt-4 text-center text-red-600 text-sm">{bookingErr}</p>
+                )}
+              </>
+            )}
 
             {step === 4 && (
               <StepConfirmation
-                selectedService={selectedService}
-                selectedDate={selectedDate}
+                selectedService={{
+                  title: selectedService?.name,
+                  price: selectedService?.price,
+                }}
+                selectedDate={{
+                  label: selectedDate ? format(selectedDate, "EEEE, MMMM d, yyyy") : "",
+                }}
                 selectedTime={selectedTime}
               />
             )}
@@ -90,17 +173,17 @@ export default function BookNow() {
                 text="Back"
                 icon="left"
                 onClick={back}
-                disabled={step === 1}
+                disabled={step === 1 || bookingLoading}
                 className="min-w-[120px]"
               />
 
               {step < 4 ? (
                 <WizardButton
                   variant={step === 3 ? "success" : "primary"}
-                  text={step === 3 ? "Confirm Booking" : "Next"}
+                  text={step === 3 ? (bookingLoading ? "Confirming..." : "Confirm Booking") : "Next"}
                   icon={step === 3 ? "check" : "right"}
                   onClick={next}
-                  disabled={!canNext}
+                  disabled={!canNext || (step === 1 && servicesLoading) || bookingLoading}
                   className="min-w-[140px]"
                 />
               ) : null}
