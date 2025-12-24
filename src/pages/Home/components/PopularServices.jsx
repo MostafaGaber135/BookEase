@@ -1,9 +1,47 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import PopularServicesCard from "../../../components/ui/PopularServicesCard";
+import api from "../../../api/axios";
+
+const CATEGORY_META = {
+  medical: { label: "Medical", color: "#2ec2b3" },
+  dental: { label: "Dental", color: "#2eb88a" },
+  fitness: { label: "Fitness", color: "#f49d25" },
+  wellness: { label: "Wellness", color: "#7c5cff" },
+};
 
 export default function PopularServices() {
+  const [services, setServices] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchServices = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const res = await api.get("/api/services");
+
+        const data = Array.isArray(res.data)
+          ? res.data
+          : res.data.services || [];
+
+        setServices(data.slice(0, 3));
+      } catch (err) {
+        setError(
+          err.response?.data?.message ||
+          "Failed to load popular services"
+        );
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchServices();
+  }, []);
+
   return (
     <section className="bg-[#f8fafa]">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-12">
@@ -25,34 +63,39 @@ export default function PopularServices() {
           </Link>
         </div>
 
-        <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <PopularServicesCard
-            badgeText="Medical"
-            badgeColor="#2ec2b3"
-            price={75}
-            title="General Consultation"
-            description="Comprehensive health check-up with our experienced physicians. Perfect for routine examinations and health assessments."
-            duration="30 minutes"
-          />
+        {loading && (
+          <p className="mt-10 text-[#627888]">
+            Loading popular services...
+          </p>
+        )}
 
-          <PopularServicesCard
-            badgeText="Dental"
-            badgeColor="#2eb88a"
-            price={120}
-            title="Dental Cleaning"
-            description="Professional teeth cleaning and oral health assessment. Keep your smile bright and healthy."
-            duration="45 minutes"
-          />
+        {!loading && error && (
+          <p className="mt-10 text-red-600">{error}</p>
+        )}
 
-          <PopularServicesCard
-            badgeText="Fitness"
-            badgeColor="#f49d25"
-            price={85}
-            title="Personal Training Session"
-            description="One-on-one fitness training with certified trainers. Customized workout plans for your goals."
-            duration="60 minutes"
-          />
-        </div>
+        {!loading && !error && (
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.map((service) => {
+              const meta =
+                CATEGORY_META[service.category] || {
+                  label: service.category,
+                  color: "#2ec2b3",
+                };
+
+              return (
+                <PopularServicesCard
+                  key={service._id}
+                  badgeText={meta.label}
+                  badgeColor={meta.color}
+                  price={service.price}
+                  title={service.name}
+                  description={service.description}
+                  duration={`${service.durationMinutes} minutes`}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );

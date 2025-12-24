@@ -4,67 +4,12 @@ import Divider from "../../components/ui/Divider";
 import PopularServicesCard from "../../components/ui/PopularServicesCard";
 
 const SERVICES = [
-  {
-    category: "Medical",
-    badgeText: "Medical",
-    badgeColor: "#2ec2b3",
-    price: 75,
-    title: "General Consultation",
-    description:
-      "Comprehensive health check-up with our experienced physicians. Perfect for routine examinations and health assessments.",
-    duration: "30 minutes",
-  },
-  {
-    category: "Dental",
-    badgeText: "Dental",
-    badgeColor: "#2eb88a",
-    price: 120,
-    title: "Dental Cleaning",
-    description:
-      "Professional teeth cleaning and oral health assessment. Keep your smile bright and healthy.",
-    duration: "45 minutes",
-  },
-  {
-    category: "Fitness",
-    badgeText: "Fitness",
-    badgeColor: "#f49d25",
-    price: 85,
-    title: "Personal Training Session",
-    description:
-      "One-on-one fitness training with certified trainers. Customized workout plans for your goals.",
-    duration: "60 minutes",
-  },
-  {
-    category: "Wellness",
-    badgeText: "Wellness",
-    badgeColor: "#f0f4f4",
-    badgeTextColor: "#304550",
-    price: 95,
-    title: "Swedish Massage",
-    description:
-      "Relaxing full-body massage to relieve stress and tension. Pure relaxation awaits.",
-    duration: "60 minutes",
-  },
-  {
-    category: "Medical",
-    badgeText: "Medical",
-    badgeColor: "#2ec2b3",
-    price: 65,
-    title: "Eye Examination",
-    description:
-      "Complete vision assessment and eye health screening. Ensure your eyes are in top condition.",
-    duration: "30 minutes",
-  },
-  {
-    category: "Fitness",
-    badgeText: "Fitness",
-    badgeColor: "#f49d25",
-    price: 25,
-    title: "Yoga Class",
-    description:
-      "Group yoga session for all skill levels. Find your balance and inner peace.",
-    duration: "75 minutes",
-  },
+  { category: "Medical", badgeText: "Medical", badgeColor: "#2ec2b3", price: 75, title: "General Consultation", description: "Comprehensive health check-up with our experienced physicians. Perfect for routine examinations and health assessments.", duration: "30 minutes", },
+  { category: "Dental", badgeText: "Dental", badgeColor: "#2eb88a", price: 120, title: "Dental Cleaning", description: "Professional teeth cleaning and oral health assessment. Keep your smile bright and healthy.", duration: "45 minutes", },
+  { category: "Fitness", badgeText: "Fitness", badgeColor: "#f49d25", price: 85, title: "Personal Training Session", description: "One-on-one fitness training with certified trainers. Customized workout plans for your goals.", duration: "60 minutes", },
+  { category: "Wellness", badgeText: "Wellness", badgeColor: "#f0f4f4", badgeTextColor: "#304550", price: 95, title: "Swedish Massage", description: "Relaxing full-body massage to relieve stress and tension. Pure relaxation awaits.", duration: "60 minutes", },
+  { category: "Medical", badgeText: "Medical", badgeColor: "#2ec2b3", price: 65, title: "Eye Examination", description: "Complete vision assessment and eye health screening. Ensure your eyes are in top condition.", duration: "30 minutes", },
+  { category: "Fitness", badgeText: "Fitness", badgeColor: "#f49d25", price: 25, title: "Yoga Class", description: "Group yoga session for all skill levels. Find your balance and inner peace.", duration: "75 minutes", },
 ];
 
 export default function Services() {
