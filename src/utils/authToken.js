@@ -12,7 +12,11 @@ export const setUser = (user) => {
 
 export const getUser = () => {
   const raw = localStorage.getItem(USER_KEY);
-  return raw ? JSON.parse(raw) : null;
+  try {
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
 };
 
 export const clearUser = () => localStorage.removeItem(USER_KEY);

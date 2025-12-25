@@ -1,13 +1,19 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import PageHeader from "./components/PageHeader";
 import PrimaryActionButton from "./components/PrimaryActionButton";
 import Panel from "./components/Panel";
 import BookingCard from "./components/BookingCard";
 import EmptyState from "./components/EmptyState";
+import api from "../../api/axios";
+import { getToken, clearToken, clearUser, notifyAuthChanged } from "../../utils/authToken";
 
-export default function MyBookings({ bookings = [] }) {
+export default function MyBookings() {
     const navigate = useNavigate();
+
+    const [bookings, setBookings] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState("");
 
     function goToServicesPage() {
         navigate("/services");
@@ -16,6 +22,65 @@ export default function MyBookings({ bookings = [] }) {
     function goToNewBookingPage() {
         navigate("/book");
     }
+
+    const normalizeStatus = (s) => {
+        const v = (s || "").toLowerCase();
+        if (v === "pending") return "Pending";
+        if (v === "confirmed") return "Confirmed";
+        if (v === "cancelled") return "Cancelled";
+        if (v === "completed") return "Completed";
+        return "Pending";
+    };
+
+    useEffect(() => {
+        const token = getToken();
+
+        if (!token) {
+            navigate("/signin", { replace: true });
+            return;
+        }
+
+        const fetchMyBookings = async () => {
+            try {
+                setLoading(true);
+                setError("");
+
+                const res = await api.get("/api/bookings/my");
+
+                const list = Array.isArray(res.data?.bookings) ? res.data.bookings : [];
+
+                const mapped = list.map((b) => ({
+                    id: b._id,
+                    title: b.serviceName,
+                    date: b.date,
+                    time: b.time,
+                    status: normalizeStatus(b.status),
+                }));
+
+                setBookings(mapped);
+            } catch (e) {
+                const code = e?.response?.status;
+
+                if (code === 401) {
+                    clearToken();
+                    clearUser();
+                    notifyAuthChanged();
+                    navigate("/signin", { replace: true });
+                    return;
+                }
+
+                setError(
+                    e?.response?.data?.message ||
+                    e?.message ||
+                    "Failed to load bookings, please try again."
+                );
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchMyBookings();
+    }, [navigate]);
 
     return (
         <div className="bg-[#f8fafa] w-full min-h-screen">
@@ -42,7 +107,15 @@ export default function MyBookings({ bookings = [] }) {
                 />
 
                 <div className="mt-6 sm:mt-8">
-                    {bookings.length > 0 ? (
+                    {loading ? (
+                        <Panel className="p-4 sm:p-6">
+                            <p className="text-sm text-[#627884]">Loading your bookings...</p>
+                        </Panel>
+                    ) : error ? (
+                        <Panel className="p-4 sm:p-6">
+                            <p className="text-sm text-red-600">{error}</p>
+                        </Panel>
+                    ) : bookings.length > 0 ? (
                         <Panel className="p-4 sm:p-6">
                             <div className="space-y-4">
                                 {bookings.map((booking) => (

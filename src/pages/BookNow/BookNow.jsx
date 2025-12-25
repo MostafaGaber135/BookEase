@@ -104,9 +104,7 @@ export default function BookNow() {
 
         setStep(4);
       } catch (e) {
-        setBookingErr(
-          e?.response?.data?.message || e?.message || "Failed to confirm booking"
-        );
+        setBookingErr(e?.response?.data?.message || e?.message || "Failed to confirm booking");
       } finally {
         setBookingLoading(false);
       }
@@ -148,9 +146,7 @@ export default function BookNow() {
             {step === 3 && (
               <>
                 <StepYourDetails form={form} setForm={setForm} />
-                {bookingErr && (
-                  <p className="mt-4 text-center text-red-600 text-sm">{bookingErr}</p>
-                )}
+                {bookingErr && <p className="mt-4 text-center text-red-600 text-sm">{bookingErr}</p>}
               </>
             )}
 

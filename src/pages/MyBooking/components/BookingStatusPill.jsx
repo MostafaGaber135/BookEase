@@ -5,6 +5,7 @@ export default function BookingStatusPill({ status }) {
         Pending: "bg-[#f1f5f5] text-[#1d2930]",
         Confirmed: "bg-[#eaf9f8] text-[#1d2930]",
         Cancelled: "bg-gray-100 text-gray-600",
+        Completed: "bg-[#eaf9f8] text-[#1d2930]",
     };
 
     return (
