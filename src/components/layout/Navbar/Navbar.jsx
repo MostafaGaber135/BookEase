@@ -7,6 +7,7 @@ import {
   clearUser,
   notifyAuthChanged,
 } from "../../../utils/authToken";
+import { GoGear } from "react-icons/go";
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
@@ -38,12 +39,12 @@ export default function Navbar() {
 
   const navLinkClass = ({ isActive }) =>
     `px-3 lg:px-4 py-2 rounded-xl text-sm lg:text-base font-medium transition whitespace-nowrap
-     ${isActive
-      ? "bg-gray-100 text-gray-900"
-      : "text-gray-700 hover:bg-gray-100"
-    }`;
+     ${isActive ? "bg-gray-100 text-gray-900" : "text-gray-700 hover:bg-gray-100"}`;
 
   const displayName = user?.username || user?.name || "User";
+
+  const role = (user?.role || user?.user?.role || "")?.toString().toLowerCase();
+  const isAdmin = isAuthed && role === "admin";
 
   return (
     <header className="sticky top-0 z-50 w-full bg-[#feffff]/90 backdrop-blur border-b border-gray-100">
@@ -70,10 +71,7 @@ export default function Navbar() {
               </svg>
             </div>
 
-            <Link
-              to="/"
-              className="font-bold text-lg sm:text-xl text-gray-900 truncate"
-            >
+            <Link to="/" className="font-bold text-lg sm:text-xl text-gray-900 truncate">
               BookEase
             </Link>
           </div>
@@ -115,21 +113,23 @@ export default function Navbar() {
               </>
             ) : (
               <div className="flex items-center gap-3">
+                {isAdmin ? (
+                  <NavLink
+                    to="/admin/dashboard"
+                    className={({ isActive }) =>
+                      `inline-flex items-center gap-2 rounded-2xl px-4 py-2 text-sm font-medium transition whitespace-nowrap
+                      ${isActive ? "bg-gray-100 text-gray-900" : "text-gray-700 hover:bg-gray-100"}`
+                    }
+                    title="Admin Dashboard"
+                    aria-label="Admin Dashboard"
+                  >
+                    <GoGear />
+                    <span>Admin</span>
+                  </NavLink>
+                ) : null}
+
                 <div className="inline-flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-2 text-gray-800">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M20 21a8 8 0 1 0-16 0"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
+                  <GoGear />
                   <span className="text-sm font-medium">{displayName}</span>
                 </div>
 
@@ -167,34 +167,12 @@ export default function Navbar() {
             onClick={() => setOpen((v) => !v)}
           >
             {!open ? (
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="text-gray-800"
-              >
-                <path
-                  d="M4 7h16M4 12h16M4 17h16"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-gray-800">
+                <path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
             ) : (
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 24 24"
-                fill="none"
-                className="text-gray-800"
-              >
-                <path
-                  d="M6 6l12 12M18 6L6 18"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                />
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" className="text-gray-800">
+                <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
               </svg>
             )}
           </button>
@@ -202,79 +180,43 @@ export default function Navbar() {
 
         <div className={`${open ? "block" : "hidden"} md:hidden pb-4`}>
           <div className="mt-2 flex flex-col gap-2">
-            <NavLink
-              onClick={() => setOpen(false)}
-              to="/"
-              className={navLinkClass}
-              end
-            >
+            <NavLink onClick={() => setOpen(false)} to="/" className={navLinkClass} end>
               Home
             </NavLink>
-            <NavLink
-              onClick={() => setOpen(false)}
-              to="/services"
-              className={navLinkClass}
-            >
+            <NavLink onClick={() => setOpen(false)} to="/services" className={navLinkClass}>
               Services
             </NavLink>
-            <NavLink
-              onClick={() => setOpen(false)}
-              to="/book"
-              className={navLinkClass}
-            >
+            <NavLink onClick={() => setOpen(false)} to="/book" className={navLinkClass}>
               Book Now
             </NavLink>
 
             {isAuthed ? (
-              <NavLink
-                onClick={() => setOpen(false)}
-                to="/mybooking"
-                className={navLinkClass}
-              >
+              <NavLink onClick={() => setOpen(false)} to="/mybooking" className={navLinkClass}>
                 My Booking
               </NavLink>
             ) : null}
 
-            <div className="h-px bg-gray-100 my-2" />
+            {isAdmin ? (
+              <NavLink onClick={() => setOpen(false)} to="/admin/dashboard" className={navLinkClass}>
+                Admin Dashboard
+              </NavLink>
+            ) : null}
 
+            <div className="h-px bg-gray-100 my-2" />
             {!isAuthed ? (
               <>
-                <Link
-                  to="/signin"
-                  onClick={() => setOpen(false)}
-                  className="px-4 py-2 rounded-xl font-medium text-gray-700 hover:bg-gray-100"
-                >
+                <Link to="/signin" onClick={() => setOpen(false)} className="px-4 py-2 rounded-xl font-medium text-gray-700 hover:bg-gray-100">
                   Sign In
                 </Link>
-
-                <Link
-                  to="/signup"
-                  onClick={() => setOpen(false)}
-                  className="bg-[#2ec2b3] text-white font-semibold px-4 py-3 rounded-xl hover:opacity-90 transition text-center"
-                >
+                <Link to="/signup" onClick={() => setOpen(false)} className="bg-[#2ec2b3] text-white font-semibold px-4 py-3 rounded-xl hover:opacity-90 transition text-center">
                   Get Started
                 </Link>
               </>
             ) : (
               <div className="flex items-center justify-between gap-3 px-2">
                 <div className="inline-flex items-center gap-2 rounded-2xl bg-gray-100 px-4 py-2 text-gray-800">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M20 21a8 8 0 1 0-16 0"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M12 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinejoin="round"
-                    />
-                  </svg>
                   <span className="text-sm font-medium">{displayName}</span>
                 </div>
-
                 <button
                   type="button"
                   onClick={() => {
@@ -286,18 +228,8 @@ export default function Navbar() {
                   title="Logout"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-                    <path
-                      d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
-                    <path
-                      d="M16 17l5-5-5-5M21 12H9"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                    />
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                    <path d="M16 17l5-5-5-5M21 12H9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                   </svg>
                 </button>
               </div>

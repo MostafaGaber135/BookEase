@@ -36,7 +36,19 @@ export default function SignUp() {
 
       if (token) {
         setToken(token);
-        setUser({ name: name.trim(), email: email.trim() });
+
+        const apiUser = res.data?.user;
+
+        if (apiUser?.name) {
+          setUser({
+            id: apiUser.id || apiUser._id,
+            name: apiUser.name || name.trim(),
+            email: apiUser.email || email.trim(),
+            role: apiUser.role,
+          });
+        } else {
+          setUser({ name: name.trim(), email: email.trim() });
+        }
 
         notifyAuthChanged();
         navigate("/mybooking", { replace: true });
@@ -144,9 +156,7 @@ export default function SignUp() {
           }
         />
 
-        {error ? (
-          <p className="text-sm text-red-600 text-center">{error}</p>
-        ) : null}
+        {error ? <p className="text-sm text-red-600 text-center">{error}</p> : null}
 
         <AuthButton
           text={loading ? "Creating..." : "Create Account"}

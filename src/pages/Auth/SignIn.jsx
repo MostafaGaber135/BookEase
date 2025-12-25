@@ -35,8 +35,15 @@ export default function SignIn() {
 
             setToken(token);
 
-            if (res.data?.user?.name) {
-                setUser({ name: res.data.user.name, email: res.data.user.email || email.trim() });
+            const apiUser = res.data?.user;
+
+            if (apiUser?.name) {
+                setUser({
+                    id: apiUser.id || apiUser._id,
+                    name: apiUser.name,
+                    email: apiUser.email || email.trim(),
+                    role: apiUser.role, 
+                });
             } else {
                 const fallbackName = email.trim().split("@")[0] || "User";
                 setUser({ name: fallbackName, email: email.trim() });
