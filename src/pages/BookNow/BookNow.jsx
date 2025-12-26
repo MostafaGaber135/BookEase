@@ -10,6 +10,7 @@ import StepConfirmation from "./steps/StepConfirmation";
 
 import api from "../../api/axios";
 import { format } from "date-fns";
+import toast from "react-hot-toast";
 
 export default function BookNow() {
   const location = useLocation();
@@ -102,9 +103,12 @@ export default function BookNow() {
           customerPhone: form.phone,
         });
 
+        toast.success("Booking confirmed successfully");
         setStep(4);
       } catch (e) {
-        setBookingErr(e?.response?.data?.message || e?.message || "Failed to confirm booking");
+        const msg = e?.response?.data?.message || e?.message || "Failed to confirm booking";
+        setBookingErr(msg);
+        toast.error(msg);
       } finally {
         setBookingLoading(false);
       }

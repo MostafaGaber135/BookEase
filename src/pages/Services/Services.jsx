@@ -28,7 +28,7 @@ export default function Services() {
         const params =
           activeTab === "All"
             ? { active: "true" }
-            : { category: activeTab.toLowerCase(), active: "true" };
+            : { category: activeTab, active: "true" };
 
         const res = await api.get("/api/services", { params });
 
@@ -109,7 +109,7 @@ export default function Services() {
                     price={services.price}
                     title={services.name}
                     description={services.description}
-                    duration={`${services.durationMinutes} minutes`}
+                    duration={`${services.durationMinutes ?? services.duration} minutes`}
                   />
                 );
               })}

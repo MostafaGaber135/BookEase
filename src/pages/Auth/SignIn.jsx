@@ -7,6 +7,9 @@ import AuthFooterLink from "./components/AuthFooterLink";
 import PasswordToggle from "./components/PasswordToggle";
 import api from "../../api/axios";
 import { setToken, setUser, notifyAuthChanged } from "../../utils/authToken";
+import toast from "react-hot-toast";
+import { isValidEmail } from "../../utils/validation";
+import { getApiMessage } from "../../utils/apiError";
 
 export default function SignIn() {
     const navigate = useNavigate();
@@ -17,11 +20,22 @@ export default function SignIn() {
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState("");
+    const [fieldErrors, setFieldErrors] = useState({ email: "", password: "" });
 
     const canSubmit = email.trim() && password && !loading;
 
+    const validate = () => {
+        const next = { email: "", password: "" };
+        if (!email.trim()) next.email = "Email is required";
+        else if (!isValidEmail(email)) next.email = "Invalid email";
+        if (!password) next.password = "Password is required";
+        setFieldErrors(next);
+        return !next.email && !next.password;
+    };
+
     const handleSignIn = async () => {
         try {
+            if (!validate()) return;
             setLoading(true);
             setError("");
 
@@ -50,13 +64,12 @@ export default function SignIn() {
             }
 
             notifyAuthChanged();
+            toast.success("Signed in successfully");
             navigate("/mybooking", { replace: true });
         } catch (e) {
-            setError(
-                e?.response?.data?.message ||
-                e?.message ||
-                "Login failed, please try again."
-            );
+            const msg = getApiMessage(e, "Login failed, please try again.");
+            setError(msg);
+            toast.error(msg);
         } finally {
             setLoading(false);
         }
@@ -79,8 +92,12 @@ export default function SignIn() {
                     label="Email"
                     type="email"
                     value={email}
-                    onChange={setEmail}
+                    onChange={(v) => {
+                        setEmail(v);
+                        if (fieldErrors.email) setFieldErrors((p) => ({ ...p, email: "" }));
+                    }}
                     placeholder="john@example.com"
+                    error={fieldErrors.email}
                     icon={
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                             <path
@@ -103,8 +120,12 @@ export default function SignIn() {
                     label="Password"
                     type={showPassword ? "text" : "password"}
                     value={password}
-                    onChange={setPassword}
+                    onChange={(v) => {
+                        setPassword(v);
+                        if (fieldErrors.password) setFieldErrors((p) => ({ ...p, password: "" }));
+                    }}
                     placeholder="••••••••"
+                    error={fieldErrors.password}
                     icon={
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
                             <path
@@ -135,6 +156,7 @@ export default function SignIn() {
                     text={loading ? "Signing In..." : "Sign In"}
                     onClick={handleSignIn}
                     disabled={!canSubmit}
+                    loading={loading}
                 />
             </div>
         </AuthLayout>

@@ -9,6 +9,7 @@ import MyBooking from "./pages/MyBooking/MyBooking";
 import SignIn from "./pages/Auth/SignIn";
 import SignUp from "./pages/Auth/SignUp";
 import AdminDashboard from "./pages/Admin/AdminDashboard";
+import { Toaster } from "react-hot-toast";
 
 function App() {
   const router = createBrowserRouter([
@@ -30,6 +31,13 @@ function App() {
 
   return (
     <>
+      <Toaster
+        position="top-right"
+        toastOptions={{
+          duration: 3500,
+          style: { borderRadius: 16 },
+        }}
+      />
       <RouterProvider router={router} />
     </>
   );

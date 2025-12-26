@@ -8,6 +8,7 @@ export default function AuthField({
     type = "text",
     icon,
     right,
+    error,
 }) {
     return (
         <div className="space-y-2">
@@ -28,7 +29,7 @@ export default function AuthField({
                     className={`
             w-full
             rounded-2xl
-            border border-[#e2e9e9]
+            border ${error ? "border-red-400" : "border-[#e2e9e9]"}
             bg-white
             px-4 py-3
             text-sm sm:text-base
@@ -43,6 +44,8 @@ export default function AuthField({
                     <span className="absolute right-3 top-1/2 -translate-y-1/2">{right}</span>
                 ) : null}
             </div>
+
+            {error ? <p className="text-xs text-red-600">{error}</p> : null}
         </div>
     );
 }

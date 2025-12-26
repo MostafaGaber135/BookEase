@@ -7,6 +7,9 @@ import AuthFooterLink from "./components/AuthFooterLink";
 import PasswordToggle from "./components/PasswordToggle";
 import api from "../../api/axios";
 import { setToken, setUser, notifyAuthChanged } from "../../utils/authToken";
+import toast from "react-hot-toast";
+import { isValidEmail, passwordRules, passwordRulesMessage } from "../../utils/validation";
+import { getApiMessage } from "../../utils/apiError";
 
 export default function SignUp() {
   const navigate = useNavigate();
@@ -18,11 +21,26 @@ export default function SignUp() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState({ name: "", email: "", password: "" });
 
+  const rules = passwordRules(password);
+  const passwordMsg = passwordRulesMessage(rules);
   const canSubmit = name.trim() && email.trim() && password && !loading;
+
+  const validate = () => {
+    const next = { name: "", email: "", password: "" };
+    if (!name.trim()) next.name = "Name is required";
+    if (!email.trim()) next.email = "Email is required";
+    else if (!isValidEmail(email)) next.email = "Invalid email";
+    if (!password) next.password = "Password is required";
+    else if (passwordMsg) next.password = passwordMsg;
+    setFieldErrors(next);
+    return !next.name && !next.email && !next.password;
+  };
 
   const handleSignUp = async () => {
     try {
+      if (!validate()) return;
       setLoading(true);
       setError("");
 
@@ -51,16 +69,16 @@ export default function SignUp() {
         }
 
         notifyAuthChanged();
+        toast.success("Account created successfully");
         navigate("/mybooking", { replace: true });
       } else {
+        toast.success("Account created. Please sign in.");
         navigate("/signin", { replace: true });
       }
     } catch (e) {
-      setError(
-        e?.response?.data?.message ||
-        e?.message ||
-        "Sign up failed, please try again."
-      );
+      const msg = getApiMessage(e, "Sign up failed, please try again.");
+      setError(msg);
+      toast.error(msg);
     } finally {
       setLoading(false);
     }
@@ -82,8 +100,12 @@ export default function SignUp() {
         <AuthField
           label="Full Name"
           value={name}
-          onChange={setName}
+          onChange={(v) => {
+            setName(v);
+            if (fieldErrors.name) setFieldErrors((p) => ({ ...p, name: "" }));
+          }}
           placeholder="John Smith"
+          error={fieldErrors.name}
           icon={
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
@@ -106,8 +128,12 @@ export default function SignUp() {
           label="Email"
           type="email"
           value={email}
-          onChange={setEmail}
+          onChange={(v) => {
+            setEmail(v);
+            if (fieldErrors.email) setFieldErrors((p) => ({ ...p, email: "" }));
+          }}
           placeholder="john@example.com"
+          error={fieldErrors.email}
           icon={
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
@@ -130,8 +156,12 @@ export default function SignUp() {
           label="Password"
           type={showPassword ? "text" : "password"}
           value={password}
-          onChange={setPassword}
+          onChange={(v) => {
+            setPassword(v);
+            if (fieldErrors.password) setFieldErrors((p) => ({ ...p, password: "" }));
+          }}
           placeholder="••••••••"
+          error={fieldErrors.password}
           icon={
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
               <path
@@ -162,6 +192,7 @@ export default function SignUp() {
           text={loading ? "Creating..." : "Create Account"}
           onClick={handleSignUp}
           disabled={!canSubmit}
+          loading={loading}
         />
       </div>
     </AuthLayout>

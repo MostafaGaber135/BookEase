@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { FaArrowRight } from "react-icons/fa";
 import PopularServicesCard from "../../../components/ui/PopularServicesCard";
 import api from "../../../api/axios";
+import Loader from "../../../components/ui/Loader";
 
 const CATEGORY_META = {
   medical: { label: "Medical", color: "#2ec2b3" },
@@ -64,9 +65,9 @@ export default function PopularServices() {
         </div>
 
         {loading && (
-          <p className="mt-10 text-[#627888]">
-            Loading popular services...
-          </p>
+          <div className="mt-10">
+            <Loader />
+          </div>
         )}
 
         {!loading && error && (
@@ -90,7 +91,7 @@ export default function PopularServices() {
                   price={service.price}
                   title={service.name}
                   description={service.description}
-                  duration={`${service.durationMinutes} minutes`}
+                  duration={`${service.durationMinutes ?? service.duration} minutes`}
                 />
               );
             })}

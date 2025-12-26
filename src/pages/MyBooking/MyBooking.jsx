@@ -7,6 +7,7 @@ import BookingCard from "./components/BookingCard";
 import EmptyState from "./components/EmptyState";
 import api from "../../api/axios";
 import { getToken, clearToken, clearUser, notifyAuthChanged } from "../../utils/authToken";
+import Loader from "../../components/ui/Loader";
 
 export default function MyBookings() {
     const navigate = useNavigate();
@@ -109,7 +110,7 @@ export default function MyBookings() {
                 <div className="mt-6 sm:mt-8">
                     {loading ? (
                         <Panel className="p-4 sm:p-6">
-                            <p className="text-sm text-[#627884]">Loading your bookings...</p>
+                            <Loader />
                         </Panel>
                     ) : error ? (
                         <Panel className="p-4 sm:p-6">

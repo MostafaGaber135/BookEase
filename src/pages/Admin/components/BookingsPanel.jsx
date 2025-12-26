@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from "react";
 import { format } from "date-fns";
 import api from "../../../api/axios";
+import toast from "react-hot-toast";
 import Card from "./Card";
 import Badge from "./Badge";
 import IconButton from "./IconButton";
@@ -53,6 +54,10 @@ export default function BookingsPanel({ loading, bookings, onRefresh }) {
       setBusyId(id);
       await api.patch(`/bookings/${id}/status`, { status });
       await onRefresh();
+      toast.success(`Booking marked as ${status}`);
+    } catch (e) {
+      const msg = e?.response?.data?.message || e?.message || "Failed to update booking";
+      toast.error(msg);
     } finally {
       setBusyId("");
     }

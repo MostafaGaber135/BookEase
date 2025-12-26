@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import api from "../../../api/axios";
+import toast from "react-hot-toast";
 import Card from "./Card";
 import Badge from "./Badge";
 import IconButton from "./IconButton";
@@ -55,6 +56,10 @@ export default function ServicesPanel({ loading, services, onRefresh }) {
       setBusyId(id);
       await api.delete(`/services/${id}`);
       await onRefresh();
+      toast.success("Service deleted");
+    } catch (e) {
+      const msg = e?.response?.data?.message || e?.message || "Failed to delete service";
+      toast.error(msg);
     } finally {
       setBusyId("");
     }
@@ -69,7 +74,7 @@ export default function ServicesPanel({ loading, services, onRefresh }) {
           <button
             type="button"
             onClick={openAdd}
-            className="inline-flex items-center gap-2 rounded-2xl bg-[#2ec2b3] px-4 py-3 text-white font-semibold hover:opacity-90 transition"
+            className="cursor-pointer inline-flex items-center gap-2 rounded-2xl bg-[#2ec2b3] px-4 py-3 text-white font-semibold hover:opacity-90 transition"
           >
             <span className="text-xl leading-none">+</span>
             <span>Add Service</span>

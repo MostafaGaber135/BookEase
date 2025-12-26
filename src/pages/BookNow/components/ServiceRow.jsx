@@ -20,7 +20,7 @@ export default function ServiceRow({ item, selected, onSelect }) {
                         {item.name}
                     </h4>
                     <p className="text-xs sm:text-sm text-[#627884] mt-1 wrap-break-word">
-                        {item.durationMinutes} min • {item.category}
+                        {item.durationMinutes ?? item.duration} min • {item.category}
                     </p>
                 </div>
 

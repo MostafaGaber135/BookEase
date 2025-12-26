@@ -11,7 +11,7 @@ export default function SegmentedTabs({ tabs, value, onChange }) {
             type="button"
             onClick={() => onChange(t.value)}
             className={[
-              "px-5 py-2 rounded-2xl text-sm font-medium transition whitespace-nowrap",
+              "cursor-pointer px-5 py-2 rounded-2xl text-sm font-medium transition whitespace-nowrap",
               active ? "bg-white text-gray-900 shadow-sm" : "text-gray-600 hover:text-gray-900",
             ].join(" ")}
             aria-pressed={active}

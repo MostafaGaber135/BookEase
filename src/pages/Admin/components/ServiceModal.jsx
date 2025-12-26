@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from "react";
 import api from "../../../api/axios";
+import toast from "react-hot-toast";
 
 const categories = ["Medical", "Dental", "Fitness", "Wellness", "Spa", "General"];
 
@@ -34,8 +35,9 @@ export default function ServiceModal({ open, onClose, initial, onSaved }) {
     if (!name.trim()) return false;
     if (!Number.isFinite(Number(duration)) || Number(duration) <= 0) return false;
     if (!Number.isFinite(Number(price)) || Number(price) < 0) return false;
+    if (!description.trim() || description.trim().length < 5) return false;
     return true;
-  }, [name, duration, price]);
+  }, [name, duration, price, description]);
 
   const save = async () => {
     if (!canSave) return;
@@ -45,7 +47,7 @@ export default function ServiceModal({ open, onClose, initial, onSaved }) {
     const payload = {
       name: name.trim(),
       category: category === "General" ? "General" : category,
-      durationMinutes: Number(duration),
+      duration: Number(duration),
       price: Number(price),
       description: description.trim(),
       isActive: !!isActive,
@@ -57,10 +59,12 @@ export default function ServiceModal({ open, onClose, initial, onSaved }) {
       } else {
         await api.post(`/services`, payload);
       }
+      toast.success(isEdit ? "Service updated" : "Service created");
       await onSaved();
     } catch (e) {
       const msg = e?.response?.data?.message || e?.message || "Failed to save service";
       setError(msg);
+      toast.error(msg);
     } finally {
       setBusy(false);
     }

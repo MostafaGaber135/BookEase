@@ -7,6 +7,7 @@ import TimeSlot from "../components/TimeSlot";
 import "../styles/daypicker.css";
 import api from "../../../api/axios";
 import { getToken } from "../../../utils/authToken";
+import Loader from "../../../components/ui/Loader";
 
 function normalizeSlots(data) {
   const raw = Array.isArray(data) ? data : data?.slots || [];
@@ -239,7 +240,11 @@ export default function StepChooseDateTime({
           <p className="text-sm text-[#627884]">Please select a date to see available times.</p>
         )}
 
-        {loading && <p className="text-sm text-[#627884]">Loading available times...</p>}
+        {loading && (
+          <div className="py-2">
+            <Loader />
+          </div>
+        )}
         {!loading && err && <p className="text-sm text-red-600">{err}</p>}
 
         {!loading && !err && selectedService && selectedDate && (
