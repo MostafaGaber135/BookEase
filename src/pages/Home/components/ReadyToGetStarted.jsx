@@ -33,7 +33,7 @@ export default function ReadyToGetStarted() {
                         />
 
                         <CtaButton
-                            to="/get-started"
+                            to="/signup"
                             text="Create Free Account"
                             variant="secondary"
                             className="min-w-[240px]"

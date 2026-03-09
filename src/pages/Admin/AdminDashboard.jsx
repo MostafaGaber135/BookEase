@@ -42,9 +42,10 @@ export default function AdminDashboard() {
         setError("");
 
         const [bRes, sRes] = await Promise.all([
-          api.get("/bookings"),
-          api.get("/services"),
+          api.get("/api/bookings"),
+          api.get("/api/services"),
         ]);
+
 
         if (!alive) return;
         setBookings(bRes?.data?.bookings || []);
@@ -76,12 +77,12 @@ export default function AdminDashboard() {
   }, [bookings]);
 
   const refreshBookings = async () => {
-    const bRes = await api.get("/bookings");
+    const bRes = await api.get("/api/bookings");
     setBookings(bRes?.data?.bookings || []);
   };
 
   const refreshServices = async () => {
-    const sRes = await api.get("/services");
+    const sRes = await api.get("/api/services");
     setServices(sRes?.data?.services || []);
   };
 
